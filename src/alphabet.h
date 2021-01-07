@@ -11,7 +11,7 @@ static constexpr char kSpace = char{26};
 static constexpr char kMin = char{0};
 static constexpr char kMax = char{26};
 
-}
+}  // namespace normalized
 
 char NormalizeChar(char c);
 char RestoreChar(char c);

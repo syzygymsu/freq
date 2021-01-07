@@ -8,18 +8,26 @@ cc_binary(
   srcs = [
     "main.cpp"
   ],
+  deps = [
+    ":libfreq",
+  ],
 )
 
 cc_library(
   name = "libfreq",
   srcs = [
     "alphabet.cpp",
+    "cli.cpp",
     "freq_count.cpp",
   ],
   hdrs = [
     "alphabet.h",
+    "cli.h",
     "freq_count.h",
     "parse.h",
+  ],
+  deps = [
+    "@boost//:program_options",
   ],
 )
 

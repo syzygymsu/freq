@@ -9,3 +9,9 @@ new_local_repository(
     build_file = "bazel/pthread.BUILD",
     path = "/usr",
 )
+
+new_local_repository(
+    name = "boost",
+    build_file = "bazel/boost.BUILD",
+    path = "/usr",
+)

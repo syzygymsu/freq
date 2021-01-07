@@ -6,7 +6,7 @@ BUILD_CID_FILE := build/build_cid
 BASE_IID := `cat "$(BASE_IID_FILE)"`
 BUILD_CID := `cat "$(BUILD_CID_FILE)"`
 
-EXEC := docker exec -ti -w /project/src $(BUILD_CID)
+EXEC := docker exec -ti -w /project $(BUILD_CID)
 
 .PHONY: all
 all: build

@@ -4,6 +4,7 @@ cc_library(
     "lib/libgtest.a"
   ],
   hdrs = glob(["include/gtest/**"]),
+  strip_include_prefix = "include",
   deps = [
     "@pthread",
   ],
