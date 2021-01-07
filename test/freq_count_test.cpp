@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "freq_count.h"
+#include "src/freq_count.h"
 
 TEST(FreqCount, Sample) {
   const std::string input =

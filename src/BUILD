@@ -29,16 +29,5 @@ cc_library(
   deps = [
     "@boost//:program_options",
   ],
-)
-
-cc_test(
-  name = "unittests",
-  srcs = [
-    "freq_count_test.cpp",
-    "parse_test.cpp",
-  ],
-  deps = [
-    ":libfreq",
-    "@gtest//:gtest_main",
-  ],
+  visibility = ["//visibility:public"],
 )

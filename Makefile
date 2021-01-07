@@ -6,7 +6,8 @@ BUILD_CID_FILE := build/build_cid
 BASE_IID := `cat "$(BASE_IID_FILE)"`
 BUILD_CID := `cat "$(BUILD_CID_FILE)"`
 
-EXEC := docker exec -ti -w /project $(BUILD_CID)
+EXEC := docker exec -it -w /project $(BUILD_CID)
+EXEC_NO_TTY := docker exec -i -w /project $(BUILD_CID)
 
 .PHONY: all
 all: build
@@ -36,10 +37,11 @@ $(BASE_IID_FILE):
 
 $(BUILD_CID_FILE): $(BASE_IID_FILE)
 	docker run -d --cidfile="$(BUILD_CID_FILE)" \
-		-v "$(abspath src)":/project/src:ro \
-		-v "$(abspath bazel)":/project/bazel:ro \
-        -v "$(abspath WORKSPACE)":/project/WORKSPACE:ro \
 		-v "$(abspath .bazelrc)":/project/.bazelrc:ro \
+		-v "$(abspath bazel)":/project/bazel:ro \
+		-v "$(abspath src)":/project/src:ro \
+		-v "$(abspath test)":/project/test:ro \
+        -v "$(abspath WORKSPACE)":/project/WORKSPACE:ro \
 		$(BASE_IID)
 
 .PHONY: sh
@@ -53,4 +55,8 @@ build: $(BUILD_CID_FILE)
 
 .PHONY: unittests
 unittests: $(BUILD_CID_FILE)
-	$(EXEC) bazel test //src:unittests --test_output=errors
+	$(EXEC) bazel test //test/... --test_output=errors
+
+.PHONY: print_run_cmd
+print_run_cmd:
+	@echo $(EXEC_NO_TTY) bazel-bin/src/freq
