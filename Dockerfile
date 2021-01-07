@@ -10,8 +10,12 @@ RUN \
   echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" > /etc/apt/sources.list.d/bazel.list && \
   apt update && apt install -y bazel
 
+# install gtest
+RUN apt install -y libgtest-dev cmake
+RUN cd /usr/src/gtest && cmake CMakeLists.txt && make && make install
+
 # prepare project directories
-RUN mkdir /project && touch /project/WORKSPACE
+RUN mkdir /project
 
 # do not stop development environment
 CMD sleep infinity
