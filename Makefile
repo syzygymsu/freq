@@ -7,7 +7,7 @@ BASE_IID := `cat "$(BASE_IID_FILE)"`
 BUILD_CID := `cat "$(BUILD_CID_FILE)"`
 
 EXEC := docker exec -it -w /project $(BUILD_CID)
-EXEC_NO_TTY := docker exec -i -w /project $(BUILD_CID)
+RUN := docker exec -i -w /project $(BUILD_CID) bazel-bin/src/freq
 
 .PHONY: all
 all: build
@@ -16,7 +16,7 @@ all: build
 rebuild: clean build
 
 .PHONY: test
-test: unittests
+test: test_units test_canonical
 
 .PHONY: stop
 stop:
@@ -53,10 +53,18 @@ sh: $(BUILD_CID_FILE)
 build: $(BUILD_CID_FILE)
 	$(EXEC) bazel build //src
 
-.PHONY: unittests
-unittests: $(BUILD_CID_FILE)
+.PHONY: test_units
+test_units: $(BUILD_CID_FILE)
 	$(EXEC) bazel test //test/... --test_output=errors
+
+.PHONY: test_canonical
+test_canonical:
+	find test/samples/ -iname '*.txt' -type f -print0| xargs -0 -I{} sh -c '$(RUN) <"{}" |cmp "{}.canonical" -'
+
+.PHONY: canonize_samples
+canonize_samples: build
+	find test/samples/ -iname '*.txt' -type f -print0| xargs -0 -I{} sh -c '$(RUN) <"{}" >"{}.canonical"'
 
 .PHONY: print_run_cmd
 print_run_cmd:
-	@echo $(EXEC_NO_TTY) bazel-bin/src/freq
+	@echo $(RUN)
