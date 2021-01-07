@@ -8,4 +8,18 @@ if [ ! -f build/build_cid ]; then
   exit 1
 fi
 
-`make print_run_cmd`
+
+case "$#" in
+"0")
+  `make print_run_cmd`
+  ;;
+"1")
+  `make print_run_cmd` <"$1"
+  ;;
+"2")
+  `make print_run_cmd` <"$1" >"$2"
+  ;;
+*)
+  >&2 echo "Unexpected number of arguments: $#"
+  exit 1
+esac
