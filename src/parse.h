@@ -9,7 +9,7 @@ void Parse(std::istream& input, Callback&& callback) {
   std::string buffer;
   char c;
   while (input.get(c).good()) {
-    c = Normalize(c);
+    c = NormalizeChar(c);  // TODO: use lookup table to normalize chars
     if (c == normalized::kSpace) {
       if (!buffer.empty()) {
         callback(buffer);

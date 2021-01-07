@@ -53,4 +53,4 @@ build: $(BUILD_CID_FILE)
 
 .PHONY: unittests
 unittests: $(BUILD_CID_FILE)
-	$(EXEC) bazel test //... --test_output=errors
+	$(EXEC) bazel test //src:unittests --test_output=errors

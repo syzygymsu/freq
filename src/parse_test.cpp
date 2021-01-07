@@ -18,7 +18,7 @@ struct Collector {
         data.begin(),
         data.end(),
         res.begin(),
-        static_cast<std::string(*)(std::string_view)>(&::Restore));
+        &::RestoreWord);
     return res;
   }
 
@@ -30,10 +30,10 @@ struct Collector {
 TEST(Parse, Simple) {
   const std::string input = "FOO bar123ZeE";
   const std::vector<std::string> expected = {"foo", "bar", "zee"};
+  std::istringstream input_stream(input);
 
   Collector collector;
-  std::istringstream ss(input);
-  Parse(ss, collector);
+  Parse(input_stream, collector);
 
   EXPECT_EQ(expected, collector.Restore());
 }
