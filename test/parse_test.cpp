@@ -8,8 +8,8 @@
 namespace {
 
 struct Collector {
-  void operator()(const std::string& str) {
-    data.push_back(str);
+  void operator()(const std::string_view str) {
+    data.push_back(std::string(str));
   }
 
   std::vector<std::string> Restore() const {
