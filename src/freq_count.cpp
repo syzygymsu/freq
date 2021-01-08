@@ -9,6 +9,7 @@
 FreqCountResult FreqCount(std::istream& input) {
   std::list<std::string> words;
   std::unordered_map<std::string_view, size_t> counters;
+  counters.reserve(100000);
 
   Parse(input, [&words, &counters](std::string_view word) {
     auto it = counters.find(word);
