@@ -1,15 +1,23 @@
 #include "freq_count.h"
 
 #include <algorithm>
+#include <list>
 #include <unordered_map>
 
 #include "parse.h"
 
 FreqCountResult FreqCount(std::istream& input) {
-  std::unordered_map<std::string, size_t> counters;
+  std::list<std::string> words;
+  std::unordered_map<std::string_view, size_t> counters;
 
-  Parse(input, [&counters](std::string_view word) {
-    ++counters[std::string(word)];  // TODO: optimize map to use string_view
+  Parse(input, [&words, &counters](std::string_view word) {
+    auto it = counters.find(word);
+    if (it == counters.end()) {
+      words.push_back(std::string(word));
+      counters.emplace(std::string_view(words.back()), 1);
+    } else {
+      ++it->second;
+    }
   });
 
   FreqCountResult res(counters.begin(), counters.end());

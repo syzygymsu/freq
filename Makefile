@@ -37,6 +37,7 @@ $(BASE_IID_FILE):
 
 $(BUILD_CID_FILE): $(BASE_IID_FILE)
 	docker run -d --cidfile="$(BUILD_CID_FILE)" \
+		--cap-add SYS_ADMIN \
 		-v "$(abspath .bazelrc)":/project/.bazelrc:ro \
 		-v "$(abspath bazel)":/project/bazel:ro \
 		-v "$(abspath src)":/project/src:ro \

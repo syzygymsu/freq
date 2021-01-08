@@ -21,7 +21,9 @@ RUN \
   cd /usr/src/gtest && cmake CMakeLists.txt && make && make install && \
   # -------- python --------
   apt install -y python-pip && \
-  pip install progressbar2 statistics
+  pip install progressbar2 statistics && \
+  # -------- perf --------
+  apt install -y linux-tools-generic
 
 # ======== project structure ========
 RUN mkdir /project
