@@ -1,12 +1,9 @@
 FROM ubuntu:18.04
 
-RUN apt update
-
-# global updates
-RUN apt update
-
-# install & warmup bazel
+# ======== build tools ========
 RUN \
+  apt update && \
+  # -------- bazel --------
   apt install -y curl gnupg && \
   curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg && \
   mv bazel.gpg /etc/apt/trusted.gpg.d/ && \
@@ -14,15 +11,19 @@ RUN \
   apt update && apt install -y bazel && \
   bazel version
 
-# install gtest
-RUN \
-  apt install -y libgtest-dev cmake && \
-  cd /usr/src/gtest && cmake CMakeLists.txt && make && make install
-
-# install boost-program-options
+# ======== build dependencies ========
 RUN apt install -y libboost-program-options-dev
 
-# prepare project directories
+# ======== testing tools ========
+RUN \
+  # -------- gtest --------
+  apt install -y libgtest-dev cmake && \
+  cd /usr/src/gtest && cmake CMakeLists.txt && make && make install && \
+  # -------- python --------
+  apt install -y python-pip && \
+  pip install progressbar2 statistics
+
+# ======== project structure ========
 RUN mkdir /project
 
 # keep development environment running

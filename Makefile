@@ -68,3 +68,7 @@ canonize_samples: build
 .PHONY: print_run_cmd
 print_run_cmd:
 	@echo $(RUN)
+
+.PHONY: perf
+perf:
+	$(EXEC) test/perf.py
