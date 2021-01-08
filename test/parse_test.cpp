@@ -7,6 +7,17 @@
 
 namespace {
 
+std::string RestoreWord(std::string_view s) {
+  std::string res;
+  res.reserve(s.size());
+  std::transform(
+      s.begin(),
+      s.end(),
+      std::back_inserter(res),
+      &RestoreChar);
+  return res;
+}
+
 struct Collector {
   void operator()(const std::string_view str) {
     data.push_back(std::string(str));

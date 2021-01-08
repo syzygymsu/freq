@@ -15,6 +15,3 @@ static constexpr char kMax = char{26};
 
 char NormalizeChar(char c);
 char RestoreChar(char c);
-
-std::string NormalizeWord(std::string_view s);
-std::string RestoreWord(std::string_view s);

@@ -23,10 +23,20 @@ FreqCountResult FreqCount(std::istream& input) {
 
   FreqCountResult res(counters.begin(), counters.end());
 
-  std::transform(res.begin(), res.end(), res.begin(), [](FreqCountItem item) {
-    item.first = RestoreWord(item.first);
-    return item;
-  });
+  {
+    char restore_table[normalized::kMax];
+    for (char c = 0; c <= normalized::kMax; ++c) {
+      restore_table[c] = RestoreChar(c);
+    }
+
+    for (FreqCountItem &item : res) {
+      std::transform(
+          item.first.begin(),
+          item.first.end(),
+          item.first.begin(),
+          [&restore_table](char c) { return restore_table[c]; });
+    }
+  }
 
   std::sort(res.begin(), res.end(), [](const FreqCountItem& l, const FreqCountItem& r) {
     if(l.second != r.second) {

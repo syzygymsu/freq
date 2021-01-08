@@ -17,6 +17,7 @@ rebuild: clean build
 
 .PHONY: test
 test: test_units test_canonical
+	@echo "\033[0;32m================\033[1;32m ALL TESTS PASSED \033[0;32m================\033[0m"
 
 .PHONY: stop
 stop:

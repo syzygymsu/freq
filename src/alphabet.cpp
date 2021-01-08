@@ -18,25 +18,3 @@ char RestoreChar(char c) {
   }
   return ' ';
 }
-
-std::string NormalizeWord(std::string_view s) {
-  std::string res;
-  res.reserve(s.size());
-  std::transform(
-      s.begin(),
-      s.end(),
-      std::back_inserter(res),
-      &NormalizeChar);
-  return res;
-}
-
-std::string RestoreWord(std::string_view s) {
-  std::string res;
-  res.reserve(s.size());
-  std::transform(
-      s.begin(),
-      s.end(),
-      std::back_inserter(res),
-      &RestoreChar);
-  return res;
-}
