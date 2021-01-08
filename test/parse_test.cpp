@@ -37,3 +37,21 @@ TEST(Parse, Simple) {
 
   EXPECT_EQ(expected, collector.Restore());
 }
+
+TEST(Parse, FullCharRange) {
+  std::string input;
+  for (char c = char{-128}; ; c++) {
+    input.push_back(c);
+    if (char{127} == c) {
+      break;
+    }
+  }
+
+  const std::vector<std::string> expected = {"abcdefghijklmnopqrstuvwxyz", "abcdefghijklmnopqrstuvwxyz"};
+  std::istringstream input_stream(input);
+
+  Collector collector;
+  Parse(input_stream, collector);
+
+  EXPECT_EQ(expected, collector.Restore());
+}

@@ -6,6 +6,14 @@
 
 template<typename Callback>
 void Parse(std::istream& input, Callback&& callback) {
+  char norm_table[256];
+  for (unsigned char i = 0;; ++i) {
+    norm_table[i] = NormalizeChar(static_cast<char>(i));
+    if ((unsigned char){255} == i) {
+      break;
+    }
+  }
+
   const size_t buffer_size = 1000000;
   std::vector<char> buffer(buffer_size);
   size_t chunk_start = 0;  // begin of unprocessed buffer
@@ -19,9 +27,9 @@ void Parse(std::istream& input, Callback&& callback) {
     chunk_size = input.gcount();
   };
 
-  auto NormalizeToNextSpace = [&buffer, &chunk_start, &chunk_size]() -> bool {
+  auto NormalizeToNextSpace = [&buffer, &chunk_start, &chunk_size, &norm_table]() -> bool {
     for (; chunk_start < chunk_size; ++chunk_start) {
-      buffer[chunk_start] = NormalizeChar(buffer[chunk_start]);  // TODO: use lookup table to normalize chars
+      buffer[chunk_start] = norm_table[static_cast<unsigned char>(buffer[chunk_start])];
       if (normalized::kSpace == buffer[chunk_start]) {
         ++chunk_start;
         return true;
