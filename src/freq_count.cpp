@@ -1,13 +1,13 @@
 #include "freq_count.h"
 
 #include <algorithm>
-#include <list>
+#include <deque>
 #include <unordered_map>
 
 #include "parse.h"
 
 FreqCountResult FreqCount(std::istream& input) {
-  std::list<std::string> words;
+  std::deque<std::string> words;
   std::unordered_map<std::string_view, size_t> counters;
   counters.reserve(100000);
 
