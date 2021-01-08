@@ -26,7 +26,7 @@ FreqCountResult FreqCount(std::istream& input) {
   {
     char restore_table[normalized::kMax];
     for (char c = 0; c <= normalized::kMax; ++c) {
-      restore_table[c] = RestoreChar(c);
+      restore_table[static_cast<unsigned char>(c)] = RestoreChar(c);
     }
 
     for (FreqCountItem &item : res) {
@@ -34,7 +34,7 @@ FreqCountResult FreqCount(std::istream& input) {
           item.first.begin(),
           item.first.end(),
           item.first.begin(),
-          [&restore_table](char c) { return restore_table[c]; });
+          [&restore_table](char c) { return restore_table[static_cast<unsigned char>(c)]; });
     }
   }
 
