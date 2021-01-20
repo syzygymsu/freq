@@ -18,3 +18,11 @@ char RestoreChar(char c) {
   }
   return ' ';
 }
+
+std::string RestoreString(std::string_view s) {
+  std::string res(s);
+  for (char& c : res) {
+    c = RestoreChar(c);
+  }
+  return res;
+}

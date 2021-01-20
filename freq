@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -e
 cd $(dirname $0)
@@ -8,16 +8,21 @@ if [ ! -f build/build_cid ]; then
   exit 1
 fi
 
+ARGS=""
+while [[ $1 == -* ]]; do
+  ARGS="$ARGS $1";
+  shift;
+done
 
 case "$#" in
 "0")
-  `make print_run_cmd`
+  `make print_run_cmd` $ARGS
   ;;
 "1")
-  `make print_run_cmd` <"$1"
+  `make print_run_cmd` $ARGS <"$1"
   ;;
 "2")
-  `make print_run_cmd` <"$1" >"$2"
+  `make print_run_cmd` $ARGS <"$1" >"$2"
   ;;
 *)
   >&2 echo "Unexpected number of arguments: $#"

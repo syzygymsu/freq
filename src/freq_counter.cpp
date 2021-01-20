@@ -1,4 +1,4 @@
-#include "freq_count.h"
+#include "freq_counter.h"
 
 #include <algorithm>
 #include <deque>
@@ -6,10 +6,23 @@
 
 #include "parse.h"
 
-FreqCountResult FreqCount(std::istream& input) {
+size_t FreqCounter::Hash::operator()(std::string_view s) const {
+  return
+      seed_
+      ? std::_Hash_impl::hash(s.data(), s.size(), *seed_)
+      : std::_Hash_impl::hash(s.data(), s.size());
+}
+
+FreqCounter::CountersMap
+FreqCounter::CreateCounters() const {
+  CountersMap counters(0, Hash(config_.hash_seed));
+  counters.reserve(config_.initial_capacity);
+  return counters;
+}
+
+FreqCountResult FreqCounter::Count(std::istream& input) const {
   std::deque<std::string> words;
-  std::unordered_map<std::string_view, size_t> counters;
-  counters.reserve(100000);
+  CountersMap counters = CreateCounters();
 
   Parse(input, [&words, &counters](std::string_view word) {
     auto it = counters.find(word);

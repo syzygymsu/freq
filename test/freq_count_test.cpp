@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "src/freq_count.h"
+#include "src/freq_counter.h"
 
-TEST(FreqCount, Sample) {
+TEST(FreqCounter, Sample) {
   const std::string input =
       "The time has come, the Walrus said,\n"
       "to talk of many things...";
@@ -21,5 +21,5 @@ TEST(FreqCount, Sample) {
   };
   std::istringstream input_stream(input);
 
-  EXPECT_EQ(expected, FreqCount(input_stream));
+  EXPECT_EQ(expected, FreqCounter().Count(input_stream));
 }

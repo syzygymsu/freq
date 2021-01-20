@@ -1,13 +1,12 @@
-.PHONY: all rebuild build clean stop sh
-
 BASE_IID_FILE := build/base_iid
 BUILD_CID_FILE := build/build_cid
 
 BASE_IID := `cat "$(BASE_IID_FILE)"`
 BUILD_CID := `cat "$(BUILD_CID_FILE)"`
 
-EXEC := docker exec -it -w /project $(BUILD_CID)
-RUN := docker exec -i -w /project $(BUILD_CID) bazel-bin/src/freq
+EXEC := docker exec -i -w /project $(BUILD_CID)
+EXECT := docker exec -it -w /project $(BUILD_CID)
+RUN_FREQ := $(EXEC) bazel run //src
 
 .PHONY: all
 all: build
@@ -16,7 +15,7 @@ all: build
 rebuild: clean build
 
 .PHONY: test
-test: test_units test_canonical
+test: build test_units test_canonical test_hash_attack
 	@echo "\033[0;32m================\033[1;32m ALL TESTS PASSED \033[0;32m================\033[0m"
 
 .PHONY: stop
@@ -48,8 +47,7 @@ $(BUILD_CID_FILE): $(BASE_IID_FILE)
 
 .PHONY: sh
 sh: $(BUILD_CID_FILE)
-	$(EXEC) /bin/bash
-
+	$(EXECT) /bin/bash
 
 .PHONY: build
 build: $(BUILD_CID_FILE)
@@ -57,20 +55,32 @@ build: $(BUILD_CID_FILE)
 
 .PHONY: test_units
 test_units: $(BUILD_CID_FILE)
-	$(EXEC) bazel test //test/... --test_output=errors
+	$(EXEC) bazel test //test:unittests --test_output=errors
 
 .PHONY: test_canonical
 test_canonical:
-	find test/samples/ -iname '*.txt' -type f -print0| xargs -0 -I{} sh -c '$(RUN) <"{}" |cmp "{}.canonical" -'
+	find test/samples/ -iname '*.txt' -type f -print0| xargs -0 -I{} sh -c '$(RUN_FREQ) <"{}" |cmp "{}.canonical" -'
+
+.PHONY: test_hash_attack
+test_hash_attack: $(BUILD_CID_FILE)
+	$(EXEC) bazel run //test:find_hash_collisions -- -c1000 | $(EXEC) bazel run //test:test_hash_collisions -- -c1000 -r15
+	$(EXEC) bazel run //test:find_hash_collisions -- -c3000 | $(EXEC) bazel run //test:test_hash_collisions -- -c3000 -r40
+
+build/big_hash_attack.txt:
+	$(EXEC) bazel run //test:find_hash_collisions > build/big_hash_attack.txt
+
+.PHONY: test_hash_attack_long
+test_hash_attack_long: $(BUILD_CID_FILE) build/big_hash_attack.txt
+	cat build/big_hash_attack.txt | $(EXEC) bazel run //test:test_hash_collisions -- -r1000
 
 .PHONY: canonize_samples
 canonize_samples: build
-	find test/samples/ -iname '*.txt' -type f -print0| xargs -0 -I{} sh -c '$(RUN) <"{}" >"{}.canonical"'
+	find test/samples/ -iname '*.txt' -type f -print0| xargs -0 -I{} sh -c '$(RUN_FREQ) <"{}" >"{}.canonical"'
 
 .PHONY: print_run_cmd
 print_run_cmd:
-	@echo $(RUN)
+	@echo $(RUN_FREQ)
 
 .PHONY: perf
-perf:
-	$(EXEC) test/perf.py
+perf: build
+	$(EXECT) test/perf.py

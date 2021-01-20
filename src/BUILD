@@ -18,12 +18,12 @@ cc_library(
   srcs = [
     "alphabet.cpp",
     "cli.cpp",
-    "freq_count.cpp",
+    "freq_counter.cpp",
   ],
   hdrs = [
     "alphabet.h",
     "cli.h",
-    "freq_count.h",
+    "freq_counter.h",
     "parse.h",
   ],
   deps = [

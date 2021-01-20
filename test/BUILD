@@ -9,3 +9,25 @@ cc_test(
     "@gtest//:gtest_main",
   ],
 )
+
+cc_binary(
+  name = "find_hash_collisions",
+  srcs = [
+    "find_hash_collisions.cpp",
+  ],
+  deps = [
+    "//src:libfreq",
+    "@boost//:program_options",
+  ],
+)
+
+cc_binary(
+  name = "test_hash_collisions",
+  srcs = [
+    "test_hash_collisions.cpp",
+  ],
+  deps = [
+    "//src:libfreq",
+    "@boost//:program_options",
+  ],
+)

@@ -5,6 +5,7 @@
 #include <optional>
 
 struct ExecuteContext {
+  bool randomization = true;
   std::shared_ptr<std::istream> input;
   std::shared_ptr<std::ostream> output;
 };

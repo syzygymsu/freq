@@ -2,10 +2,11 @@
 
 #include <fstream>
 #include <iostream>
+#include <random>
 
 #include <boost/program_options.hpp>
 
-#include "freq_count.h"
+#include "freq_counter.h"
 
 namespace po = boost::program_options;
 
@@ -20,7 +21,8 @@ auto ProgramOptionsDescription() {
   res.options.add_options()
       ("help,h", "Display this help message and exit")
       ("input,i", po::value<std::string>()->default_value(""), "Input file")
-      ("output,o", po::value<std::string>()->default_value(""), "Output file");
+      ("output,o", po::value<std::string>()->default_value(""), "Output file")
+      ("no-randomization,s", "Do not use randomization");
 
   res.positional.add("input", 1);
   res.positional.add("output", 2);
@@ -94,11 +96,18 @@ int PrepareContext(int argc, char** argv, ExecuteContext& context) {
     context.output = of_stream;
   }
 
+  context.randomization = !vm.count("no-randomization");
+
   return 0;
 }
 
 void Execute(ExecuteContext& context) {
-  const FreqCountResult result = FreqCount(*context.input);
+  FreqCounter::Config config;
+  if (context.randomization) {
+    config.hash_seed = std::random_device()();
+  }
+
+  const FreqCountResult result = FreqCounter(config).Count(*context.input);
 
   std::ostream & out = *context.output;
   for (const FreqCountItem& item : result) {
