@@ -38,7 +38,7 @@ FreqCountResult FreqCounter::Count(std::istream& input) const {
 
   {
     char restore_table[normalized::kMax];
-    for (char c = 0; c <= normalized::kMax; ++c) {
+    for (char c = 0; c < normalized::kMax; ++c) {
       restore_table[static_cast<unsigned char>(c)] = RestoreChar(c);
     }
 
