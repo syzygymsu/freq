@@ -23,7 +23,7 @@ RUN \
   apt install -y python-pip && \
   pip install progressbar2 statistics && \
   # -------- perf --------
-  #apt install -y linux-tools-generic && \ # repository is flaky today
+  apt install -y linux-tools-generic && \
   # -------- end --------
   true
 

@@ -33,7 +33,7 @@ clean: stop
 	fi
 
 $(BASE_IID_FILE):
-	docker build --iidfile="$(BASE_IID_FILE)" .
+	docker build --iidfile="$(BASE_IID_FILE)" --no-cache .
 
 $(BUILD_CID_FILE): $(BASE_IID_FILE)
 	docker run -d --cidfile="$(BUILD_CID_FILE)" \
