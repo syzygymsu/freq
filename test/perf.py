@@ -48,4 +48,4 @@ for i in xrange(rounds):
 print(
     "Perf time(ms):", round(statistics.mean(times) * 1000, 1),
     "±" + str(round(statistics.stdev(times) * 1000, 1)) + ",",
-    "mean:", round(statistics.mean(times) * 1000, 1))
+    "median:", round(statistics.median(times) * 1000, 1))
