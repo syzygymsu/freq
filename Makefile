@@ -15,7 +15,7 @@ all: build
 rebuild: clean build
 
 .PHONY: test
-test: build test_units test_canonical test_hash_attack
+test: build test_units test_canonical
 	@echo "\033[0;32m================\033[1;32m ALL TESTS PASSED \033[0;32m================\033[0m"
 
 .PHONY: stop

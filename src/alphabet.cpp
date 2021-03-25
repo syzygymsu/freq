@@ -26,3 +26,26 @@ std::string RestoreString(std::string_view s) {
   }
   return res;
 }
+
+namespace normalized {
+
+size_t ShortWordToIdx(std::string_view s) {
+  size_t res = 0;
+  for (char c : s) {
+    res *= kNumChars;
+    res += c;
+  }
+  return res;
+}
+
+std::string IdxToShortWord(size_t idx, size_t len) {
+  std::string res(len, char{0});
+  for (size_t i = 0; i < len; ++i) {
+    res[len - 1 - i] = idx % kNumChars;
+    idx /= kNumChars;
+  }
+
+  return res;
+}
+
+}  // namespace normalized

@@ -22,19 +22,45 @@ FreqCounter::CreateCounters() const {
 
 FreqCountResult FreqCounter::Count(std::istream& input) const {
   std::deque<std::string> words;
-  CountersMap counters = CreateCounters();
 
-  Parse(input, [&words, &counters](std::string_view word) {
-    auto it = counters.find(word);
-    if (it == counters.end()) {
+  static const size_t kShortSize = 5;  // optimized for 100MB-ish files
+
+  std::array<std::vector<size_t>, kShortSize + 1> short_counters;
+  CountersMap long_counters = CreateCounters();
+
+  // init counters
+  size_t counters_size = 1;
+  for (size_t len = 0; len <= kShortSize; ++len) {
+    short_counters[len].resize(counters_size, 0);
+    counters_size *= normalized::kNumChars;
+  }
+
+  // parse & count
+  Parse(input, [&words, &short_counters, &long_counters](std::string_view word) {
+    if (word.size() <= kShortSize) {
+      short_counters[word.size()][normalized::ShortWordToIdx(word)]++;
+      return;
+    }
+
+    auto it = long_counters.find(word);
+    if (it == long_counters.end()) {
       words.push_back(std::string(word));
-      counters.emplace(std::string_view(words.back()), 1);
+      long_counters.emplace(std::string_view(words.back()), 1);
     } else {
       ++it->second;
     }
   });
 
-  FreqCountResult res(counters.begin(), counters.end());
+  // collect results
+  FreqCountResult res(long_counters.begin(), long_counters.end());
+  for (size_t len = 0; len <= kShortSize; ++len) {
+    for (size_t idx = 0; idx < short_counters[len].size(); ++idx) {
+      size_t count = short_counters[len][idx];
+      if (count) {
+        res.emplace_back(normalized::IdxToShortWord(idx, len), count);
+      }
+    }
+  }
 
   {
     char restore_table[normalized::kMax];
